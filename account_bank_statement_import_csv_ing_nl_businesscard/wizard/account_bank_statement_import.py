@@ -26,7 +26,6 @@ FIELDNAMES = [
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    @api.model
     def _prepare_transaction_line(self, row):
         vals = {
             'date': row["Boekingsdatum"],
