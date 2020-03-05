@@ -4,7 +4,7 @@
     'version': '11.0.1.0.0',
     'license': 'AGPL-3',
     'author': 'Alexey Yushin',
-    'website': 'https://apexlabs.ai/',
+    'website': 'https://github.com/apexlabs-ai/odoo-bank-import-csv',
     'depends': [
         'account_bank_statement_import',
     ],
