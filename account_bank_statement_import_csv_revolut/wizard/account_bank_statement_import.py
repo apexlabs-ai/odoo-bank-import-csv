@@ -42,11 +42,18 @@ class AccountBankStatementImport(models.TransientModel):
     def _prepare_transaction_line(self, row):
         vals = {
             'date': row["Date completed"],
-            'name': row["Description"].replace('To ','').replace('From ',''),
+            'name': row["Description"].replace('To ', '').replace('From ',''),
             'amount': float(row["Amount"]),
             'account_number': row["Beneficiary account number"] or row["Beneficiary IBAN"],
             'note': row["Reference"]
         }
+
+        if row["Card name"]:
+            vals['name'] += " / {}".format(row["card_name"])
+
+        if row["Payment currency"] != row["Orig currency"]:
+            vals['name'] += "  / {} {})".format(row["Orig currency"], row["Orig amount"])
+
         vals['ref'] = vals['unique_import_id'] = hashlib.md5(
             str(vals).encode('utf-8')).hexdigest()
 
