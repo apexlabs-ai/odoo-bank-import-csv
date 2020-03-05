@@ -70,8 +70,7 @@ class AccountBankStatementImport(models.TransientModel):
         header = self._read_header(input)
 
         if header is None:
-            return super(AccountBankStatementImport, self)._parse_file(
-                data_file)
+            return super()._parse_file(data_file)
 
         reader = csv.DictReader(input, delimiter=';')
 

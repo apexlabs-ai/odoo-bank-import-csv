@@ -62,8 +62,7 @@ class AccountBankStatementImport(models.TransientModel):
         reader = csv.DictReader(io.StringIO(data_file.decode('utf-8-sig')))
 
         if reader.fieldnames != FIELDNAMES:
-            return super(AccountBankStatementImport, self)._parse_file(
-                data_file)
+            return super()._parse_file(data_file)
 
         transactions = []
         total_amt = 0.00
