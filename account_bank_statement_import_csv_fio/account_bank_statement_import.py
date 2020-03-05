@@ -48,7 +48,7 @@ HEADER_FIELDS = [
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    def _prepare_transaction_line(self, row):
+    def _prepare_transaction_line_fio(self, row):
         vals = {
             'date': row["Date"],
             'name': row["To account"],
@@ -91,7 +91,7 @@ class AccountBankStatementImport(models.TransientModel):
                     raise UserError(_(
                         "Multi-currency statements are not supported. "))
 
-                vals = self._prepare_transaction_line(row)
+                vals = self._prepare_transaction_line_fio(row)
 
                 if vals:
                     transactions.append(vals)

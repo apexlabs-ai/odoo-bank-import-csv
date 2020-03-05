@@ -26,7 +26,7 @@ FIELDNAMES = [
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    def _prepare_transaction_line(self, row):
+    def _prepare_transaction_line_ing_nl(self, row):
         vals = {
             'date': row["Boekingsdatum"],
             'name': row["Omschrijving"],
@@ -58,7 +58,7 @@ class AccountBankStatementImport(models.TransientModel):
                 elif account != row["Accountnummer"]:
                     raise UserError(_(
                         "Multi-account statements are not supported. "))
-                vals = self._prepare_transaction_line(row)
+                vals = self._prepare_transaction_line_ing_nl(row)
                 if vals:
                     transactions.append(vals)
                     total_amt += vals['amount']

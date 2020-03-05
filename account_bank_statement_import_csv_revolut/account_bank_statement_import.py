@@ -38,7 +38,7 @@ FIELDNAMES = [
 class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
-    def _prepare_transaction_line(self, row):
+    def _prepare_transaction_line_revolut(self, row):
         vals = {
             'date': row["Date completed"],
             'name': row["Description"].replace('To ', '').replace('From ',''),
@@ -81,7 +81,7 @@ class AccountBankStatementImport(models.TransientModel):
                 elif account != row["Account"]:
                     raise UserError(_(
                         "Multi-account statements are not supported. "))
-                vals = self._prepare_transaction_line(row)
+                vals = self._prepare_transaction_line_revolut(row)
                 if vals:
                     transactions.append(vals)
                     total_amt += vals['amount']
