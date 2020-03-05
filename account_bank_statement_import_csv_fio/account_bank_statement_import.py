@@ -49,6 +49,8 @@ class AccountBankStatementImport(models.TransientModel):
     _inherit = 'account.bank.statement.import'
 
     def _prepare_transaction_line_fio(self, row):
+        if row["Bank Code"]:
+            row["To account"] += ("/" + row["Bank Code"])
         vals = {
             'date': row["Date"],
             'name': row["To account"],
@@ -60,8 +62,8 @@ class AccountBankStatementImport(models.TransientModel):
         }
         for symbol in ("KS", "VS", "SS"):
             if row[symbol]:
-                vals['note'] += " {}: {}".format(symbol, row[symbol])
-                vals['name'] += " {}: {}".format(symbol, row[symbol])
+                vals['note'] += " {}:{}".format(symbol, row[symbol])
+                vals['name'] += " {}:{}".format(symbol, row[symbol])
         return vals
 
     def _parse_file(self, data_file):
