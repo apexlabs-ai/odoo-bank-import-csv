@@ -53,6 +53,10 @@ class AccountBankStatementImport(models.TransientModel):
         if row["Payment currency"] != row["Orig currency"]:
             vals['name'] += "  ({} {})".format(row["Orig currency"], row["Orig amount"])
 
+        if row["Fee"]:
+            vals['amount'] += float(row["Fee"])
+            vals['name'] += "  Fee: {}".format(row["Fee"])
+
         vals['ref'] = vals['unique_import_id'] = hashlib.md5(
             str(vals).encode('utf-8')).hexdigest()
 
