@@ -62,7 +62,7 @@ class AccountBankStatementImport(models.TransientModel):
         vals['ref'] = vals['unique_import_id'] = hashlib.md5(
             str(vals).encode('utf-8')).hexdigest()
 
-        return vals
+        return vals, float(row["Balance"])
 
     def _parse_file(self, data_file):
         reader = csv.DictReader(io.StringIO(data_file.decode('utf-8-sig')))
@@ -74,6 +74,8 @@ class AccountBankStatementImport(models.TransientModel):
         total_amt = 0.00
         account = None
         currency = None
+        balance_end = None
+        balance_start = None
 
         try:
             for row in reader:
@@ -87,20 +89,25 @@ class AccountBankStatementImport(models.TransientModel):
                 elif account != row["Account"]:
                     raise UserError(_(
                         "Multi-account statements are not supported. "))
-                vals = self._prepare_transaction_line_revolut(row)
+                vals, balance = self._prepare_transaction_line_revolut(row)
+
                 if vals:
                     transactions.append(vals)
                     total_amt += vals['amount']
+                if balance and balance_end is None:
+                        balance_end = balance
+                        balance_start = balance + vals['amount']
+
         except Exception as e:
             raise UserError(_(
                 "The following problem occurred during import. "
                 "The file might not be valid.\n\n %s") % e.message)
 
-        # balance = float(ofx.account.statement.balance)
+
         vals_bank_statement = {
             'name': account,
             'transactions': transactions,
-            'balance_start': 0,
-            'balance_end_real': total_amt,
+            'balance_start': balance_start,
+            'balance_end_real': balance_end,
         }
         return currency, account, [vals_bank_statement]
