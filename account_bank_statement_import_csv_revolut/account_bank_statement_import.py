@@ -94,9 +94,10 @@ class AccountBankStatementImport(models.TransientModel):
                 if vals:
                     transactions.append(vals)
                     total_amt += vals['amount']
-                if balance and balance_end is None:
+                if balance:
+                    if balance_end is None:
                         balance_end = balance
-                        balance_start = balance - vals['amount']
+                    balance_start = balance - vals['amount']
 
         except Exception as e:
             raise UserError(_(
