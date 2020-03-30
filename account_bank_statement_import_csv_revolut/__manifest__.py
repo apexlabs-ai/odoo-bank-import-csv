@@ -1,7 +1,7 @@
 {
     'name': 'Import CSV Bank Statement -- Revolut',
     'category': 'Banking addons',
-    'version': '11.0.1.0.0',
+    'version': '11.0.1.1.0',
     'license': 'AGPL-3',
     'author': 'Alexey Yushin',
     'website': 'https://github.com/apexlabs-ai/odoo-bank-import-csv',
