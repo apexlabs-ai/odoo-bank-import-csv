@@ -10,12 +10,10 @@ _logger = logging.getLogger(__name__)
 
 
 FIELDNAMES = [
-    'Date started',
-    'Time started',
-    'Transaction started timezone',
-    'Date completed',
-    'Time completed',
-    'Transaction completed timezone',
+    'Date started (UTC)',
+    'Time started (UTC)',
+    'Date completed (UTC)',
+    'Time completed (UTC)',
     'State',
     'Type',
     'Description',
