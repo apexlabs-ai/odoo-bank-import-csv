@@ -40,7 +40,7 @@ class AccountBankStatementImport(models.TransientModel):
 
     def _prepare_transaction_line_revolut(self, row):
         vals = {
-            'date': row["Date completed"],
+            'date': row["Date completed (UTC)"],
             'name': row["Description"].replace('To ', '').replace('From ',''),
             'amount': float(row["Amount"]),
             'account_number': row["Beneficiary account number"] or row["Beneficiary IBAN"],
