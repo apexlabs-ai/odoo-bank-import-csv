@@ -53,8 +53,8 @@ class AccountBankStatementImport(models.TransientModel):
             row["To account"] += ("/" + row["Bank Code"])
         vals = {
             'date': row["Date"],
-            'name': row["BIC"] or row["To account"],
-            'account_number': row["BIC"] or row["To account"],
+            'name': row["To account"],
+            'account_number': row["To account"],
             'amount': float(row["Volume"]),
             'note': row["Message for beneficiary"],
             'ref': row["ID of transaction"],
