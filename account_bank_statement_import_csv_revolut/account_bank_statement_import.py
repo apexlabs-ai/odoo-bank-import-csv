@@ -8,31 +8,11 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-
-FIELDNAMES = [
-    'Date started (UTC)',
-    'Time started (UTC)',
-    'Date completed (UTC)',
-    'Time completed (UTC)',
-    'State',
-    'Type',
-    'Description',
-    'Reference',
-    'Payer',
-    'Card name',
-    'Card number',
-    'Orig currency',
-    'Orig amount',
-    'Payment currency',
-    'Amount',
-    'Fee',
-    'Balance',
-    'Account',
-    'Beneficiary account number',
-    'Beneficiary sort code or routing number',
-    'Beneficiary IBAN',
-    'Beneficiary BIC'
-]
+FIELDNAMES = ["Date started (UTC)", "Date completed (UTC)", "Date started (Europe/Prague)",
+              "Date completed (Europe/Prague)",
+              "ID", "Type", "Description", "Reference", "Payer", "Card number", "Orig currency", "Orig amount",
+              "Payment currency", "Amount", "Fee", "Balance", "Account", "Beneficiary account number",
+              "Beneficiary sort code or routing number", "Beneficiary IBAN", "Beneficiary BIC"]
 
 
 class AccountBankStatementImport(models.TransientModel):
@@ -41,14 +21,14 @@ class AccountBankStatementImport(models.TransientModel):
     def _prepare_transaction_line_revolut(self, row):
         vals = {
             'date': row["Date completed (UTC)"],
-            'name': row["Description"].replace('To ', '').replace('From ',''),
+            'name': row["Description"].replace('To ', '').replace('From ', ''),
             'amount': float(row["Amount"]),
             'account_number': row["Beneficiary account number"] or row["Beneficiary IBAN"],
             'note': row["Reference"]
         }
 
-        if row["Card name"]:
-            vals['name'] += " / {}".format(row["Card name"])
+        if row["Card number"]:
+            vals['name'] += " / {}".format(row["Card number"])
 
         if row["Payment currency"] != row["Orig currency"]:
             vals['name'] += "  ({} {})".format(row["Orig currency"], row["Orig amount"])
@@ -79,16 +59,18 @@ class AccountBankStatementImport(models.TransientModel):
 
         try:
             for row in reader:
-                if not currency:
-                    currency = row["Payment currency"]
-                elif currency != row["Payment currency"]:
-                    raise UserError(_(
-                        "Multi-currency statements are not supported. "))
                 if not account:
                     account = row["Account"]
                 elif account != row["Account"]:
                     raise UserError(_(
                         "Multi-account statements are not supported. "))
+
+                if not currency:
+                    currency = row["Payment currency"]
+                elif currency != row["Payment currency"]:
+                    raise UserError(_(
+                        "Multi-currency statements are not supported. "))
+
                 vals, balance = self._prepare_transaction_line_revolut(row)
 
                 if vals:
@@ -102,8 +84,7 @@ class AccountBankStatementImport(models.TransientModel):
         except Exception as e:
             raise UserError(_(
                 "The following problem occurred during import. "
-                "The file might not be valid.\n\n %s") % e.message)
-
+                "The file might not be valid.\n\n %s") % e)
 
         vals_bank_statement = {
             'name': account,
